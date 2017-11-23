@@ -12,3 +12,7 @@ target_include_directories(lua
 target_link_libraries(lua
     m
     )
+
+# after adding this macro, 0xFFFFFFFF is interpreted as -1 by Lua interpreter
+# in 64bit mode, any number larger or equal to 0xFFFFFFFF is properly recognized as an integer
+#add_definitions(-DLUA_32BITS)
