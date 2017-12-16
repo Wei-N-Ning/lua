@@ -6,4 +6,4 @@ enable_testing()
 add_subdirectory(src)
 
 add_subdirectory(tests/utilities)
-add_subdirectory(tests/lua_main)
+add_subdirectory(tests/luaBase)
