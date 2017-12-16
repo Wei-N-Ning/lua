@@ -14,16 +14,6 @@ target_include_directories(luaBase
     INTERFACE
     include/luaBase)
 
-add_library(luaAuxLib STATIC
-    include/luaAuxLib/lauxlib.h
-    sources/luaAuxLib/lauxlib.c)
-target_include_directories(luaAuxLib
-    PUBLIC
-    include/luaAuxLib)
-target_link_libraries(luaAuxLib
-    PUBLIC
-    luaBase)
-
 file(GLOB __LUACORE_HEADER_FILES include/luaCore/*.h)
 file(GLOB __LUACORE_SOURCE_FILES sources/luaCore/*.c)
 add_library(luaCore STATIC
@@ -34,8 +24,8 @@ target_include_directories(luaCore
     include/luaCore)
 target_link_libraries(luaCore
     PUBLIC
-    luaBase
-    luaAuxLib)
+    m
+    luaBase)
 
 add_library(luaStdLib STATIC
     sources/luaStdLib/lbaselib.c
@@ -53,12 +43,11 @@ add_library(luaStdLib STATIC
     )
 target_link_libraries(luaStdLib
     PUBLIC
-    luaAuxLib)
+    luaCore)
 
 add_executable(lua
     sources/apps/lua.c)
 target_link_libraries(lua
     PUBLIC
     luaCore
-    luaStdLib
-    m)
+    luaStdLib)
