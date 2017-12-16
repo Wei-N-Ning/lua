@@ -9,11 +9,20 @@
 # print(string.format("0x%X", math.maxinteger))
 
 
-add_library(luaBase STATIC
-    sources/luaBase/lctype.c)
+add_library(luaBase INTERFACE)
 target_include_directories(luaBase
-    PUBLIC
+    INTERFACE
     include/luaBase)
+
+add_library(luaAuxLib STATIC
+    include/luaAuxLib/lauxlib.h
+    sources/luaAuxLib/lauxlib.c)
+target_include_directories(luaAuxLib
+    PUBLIC
+    include/luaAuxLib)
+target_link_libraries(luaAuxLib
+    PUBLIC
+    luaBase)
 
 file(GLOB __LUACORE_HEADER_FILES include/luaCore/*.h)
 file(GLOB __LUACORE_SOURCE_FILES sources/luaCore/*.c)
@@ -25,17 +34,8 @@ target_include_directories(luaCore
     include/luaCore)
 target_link_libraries(luaCore
     PUBLIC
-    luaBase)
-
-add_library(luaAuxLib STATIC
-    include/luaAuxLib/lauxlib.h
-    sources/luaAuxLib/lauxlib.c)
-target_include_directories(luaAuxLib
-    PUBLIC
-    include/luaAuxLib)
-target_link_libraries(luaAuxLib
-    PUBLIC
-    luaBase)
+    luaBase
+    luaAuxLib)
 
 add_library(luaStdLib STATIC
     sources/luaStdLib/lbaselib.c
@@ -49,29 +49,16 @@ add_library(luaStdLib STATIC
     sources/luaStdLib/lutf8lib.c
     sources/luaStdLib/lstrlib.c
     sources/luaStdLib/loslib.c
+    sources/luaStdLib/linit.c
     )
 target_link_libraries(luaStdLib
     PUBLIC
     luaAuxLib)
 
-add_library(luaTests STATIC
-    include/luaTests/ltests.h
-    sources/luaTests/ltests.c)
-target_include_directories(luaTests
-    PUBLIC
-    include/luaTests)
-target_link_libraries(luaTests
-    PUBLIC
-    luaCore
-    luaAuxLib)
-
 add_executable(lua
-    sources/apps/ldump.c
-    sources/apps/linit.c
     sources/apps/lua.c)
 target_link_libraries(lua
     PUBLIC
     luaCore
-    luaTests
     luaStdLib
     m)
