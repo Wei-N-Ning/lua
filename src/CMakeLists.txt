@@ -1,16 +1,4 @@
 
-#file(GLOB HEADER_FILES include/*.h)
-#file(GLOB SOURCE_FILES sources/*.c)
-#
-#add_executable(lua
-#    ${HEADER_FILES} ${SOURCE_FILES})
-#target_include_directories(lua
-#    PUBLIC
-#    include)
-#target_link_libraries(lua
-#    m
-#    )
-
 # "Small Lua" mode
 
 #add_definitions(-DLUA_32BITS)
@@ -21,10 +9,23 @@
 # print(string.format("0x%X", math.maxinteger))
 
 
-add_library(luaBase INTERFACE)
+add_library(luaBase STATIC
+    sources/luaBase/lctype.c)
 target_include_directories(luaBase
-    INTERFACE
+    PUBLIC
     include/luaBase)
+
+file(GLOB __LUACORE_HEADER_FILES include/luaCore/*.h)
+file(GLOB __LUACORE_SOURCE_FILES sources/luaCore/*.c)
+add_library(luaCore STATIC
+    ${__LUACORE_HEADER_FILES}
+    ${__LUACORE_SOURCE_FILES})
+target_include_directories(luaCore
+    PUBLIC
+    include/luaCore)
+target_link_libraries(luaCore
+    PUBLIC
+    luaBase)
 
 add_library(luaAuxLib STATIC
     include/luaAuxLib/lauxlib.h
@@ -52,3 +53,25 @@ add_library(luaStdLib STATIC
 target_link_libraries(luaStdLib
     PUBLIC
     luaAuxLib)
+
+add_library(luaTests STATIC
+    include/luaTests/ltests.h
+    sources/luaTests/ltests.c)
+target_include_directories(luaTests
+    PUBLIC
+    include/luaTests)
+target_link_libraries(luaTests
+    PUBLIC
+    luaCore
+    luaAuxLib)
+
+add_executable(lua
+    sources/apps/ldump.c
+    sources/apps/linit.c
+    sources/apps/lua.c)
+target_link_libraries(lua
+    PUBLIC
+    luaCore
+    luaTests
+    luaStdLib
+    m)
