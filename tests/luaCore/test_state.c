@@ -10,12 +10,14 @@
 #include <tinyCUnit.h>
 
 
-TINYTEST CreateState_Expect_() {
+TINYTEST NewState_ExpectNotNull() {
     struct lua_State *pState = luaL_newstate();
+    ASSERT_TRUE(pState);
+    lua_close(pState);
 }
 
 
 int main(int argc, char **argv) {
-    AddTinyTest(CreateState_Expect_);
+    AddTinyTest(NewState_ExpectNotNull);
     return RUN_ALL_TESTS();
 }
