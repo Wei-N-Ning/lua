@@ -9,3 +9,10 @@ add_executable(printline printline.c)
 target_link_libraries(printline
     PUBLIC
     luaStdLib)
+
+
+add_executable(pushvalue pushvalue.c)
+target_link_libraries(pushvalue
+    PUBLIC
+    luaStdLib)
+

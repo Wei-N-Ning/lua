@@ -19,16 +19,24 @@
 #include <lualib.h>
 
 
-int main(int argc, char **argv) {
+// return an error code; 0 means no error
+void demoPrintOneLine(struct lua_State *pState) {
+    int error = 0;
     char buff[255] = "print(\"there is a cow 1337\")";
-    int error;
-    struct lua_State *pState = luaL_newstate();
-    luaL_openlibs(pState);
     error = luaL_loadstring(pState, buff) || lua_pcall(pState, 0, 0, 0);
     if (error) {
         fprintf(stderr, "%s\n", lua_tostring(pState, -1));
         lua_pop(pState, 1);
     }
+}
+
+
+int main(int argc, char **argv) {
+    struct lua_State *pState = luaL_newstate();
+    luaL_openlibs(pState);
+
+    demoPrintOneLine(pState);
+
     lua_close(pState);
     return 0;
 }
