@@ -23,3 +23,8 @@ target_link_libraries(stackop
     PUBLIC
     luaStdLib)
 
+
+add_executable(errorhandling errorhandling.c)
+target_link_libraries(errorhandling
+    PUBLIC
+    luaStdLib)
