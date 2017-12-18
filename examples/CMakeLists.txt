@@ -16,3 +16,10 @@ target_link_libraries(pushvalue
     PUBLIC
     luaStdLib)
 
+
+
+add_executable(stackop stackop.c)
+target_link_libraries(stackop
+    PUBLIC
+    luaStdLib)
+

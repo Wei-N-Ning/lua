@@ -79,6 +79,9 @@ void demoPushAndQueryValues(struct lua_State *pState) {
 }
 
 
+// Lua Book P244
+// (function) lua_settop(L, 0) empties the stack
+// lua_pop(L, -1) is equivalent to lua_settop(L, 0)
 void demoPushAndClear(struct lua_State *pState) {
     assert(0 == lua_gettop(pState));
 
