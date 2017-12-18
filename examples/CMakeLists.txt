@@ -28,3 +28,11 @@ add_executable(errorhandling errorhandling.c)
 target_link_libraries(errorhandling
     PUBLIC
     luaStdLib)
+
+
+add_executable(luaconfigurator
+    luaconfigurator.h
+    luaconfigurator.cpp)
+target_link_libraries(luaconfigurator
+    PUBLIC
+    luaStdLib)
