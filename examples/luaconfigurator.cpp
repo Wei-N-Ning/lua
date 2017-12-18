@@ -19,15 +19,15 @@ int getInteger(struct lua_State *pState, const char *name) {
 
 
 bool loadConfig(struct lua_State *pState) {
-    std::string config(
+    std::string config{
         "IDKFA = 200\n"
         "IDDQD = 300\n"
         "IDNOCLIP = -400\n"
         "local function init()\n"
-            "IDNOCLIP = 400\n"
+        "IDNOCLIP = 400\n"
         "end\n"
         "init()\n"
-    );
+    };
     if (luaL_loadstring(pState, config.c_str()) || (lua_pcall(pState, 0, 0, 0))) {
         return false;
     };

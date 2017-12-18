@@ -33,6 +33,9 @@ target_link_libraries(errorhandling
 add_executable(luaconfigurator
     luaconfigurator.h
     luaconfigurator.cpp)
+set_target_properties(luaconfigurator
+    PROPERTIES
+    CXX_STANDARD 11)
 target_link_libraries(luaconfigurator
     PUBLIC
     luaStdLib)
