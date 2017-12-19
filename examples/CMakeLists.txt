@@ -50,3 +50,15 @@ set_target_properties(tableop
 target_link_libraries(tableop
     PUBLIC
     luaStdLib)
+
+
+add_executable(callluafuncs
+    callluafuncs.cpp
+    callluafuncs.h)
+set_target_properties(callluafuncs
+    PROPERTIES
+    CXX_STANDARD 11)
+target_link_libraries(callluafuncs
+    PUBLIC
+    luaStdLib)
+
