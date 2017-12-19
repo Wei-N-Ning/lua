@@ -39,3 +39,14 @@ set_target_properties(luaconfigurator
 target_link_libraries(luaconfigurator
     PUBLIC
     luaStdLib)
+
+
+add_executable(tableop
+    tableop.cpp
+    tableop.h)
+set_target_properties(tableop
+    PROPERTIES
+    CXX_STANDARD 11)
+target_link_libraries(tableop
+    PUBLIC
+    luaStdLib)
