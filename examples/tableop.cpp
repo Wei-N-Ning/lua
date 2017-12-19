@@ -52,6 +52,17 @@ int getIntField(struct lua_State *pState, const char *name) {
 }
 
 
+// using the new convenient function added in Lua 5.3, lua_setfield()
+double getDoubleField(struct lua_State *pState, const char *name) {
+    if (lua_getfield(pState, -1, name) != LUA_TNUMBER) {
+        return 0;
+    }
+    auto _ = (double)lua_tonumber(pState, -1);
+    lua_pop(pState, 1);
+    return _;
+}
+
+
 void demoGetStringValueFromTable(struct lua_State *pState) {
     assert(loadTable(pState, "conf = {name=\"ak47\", damage=33.3, clipSize=30}\n", "conf"));
 
@@ -81,6 +92,36 @@ void demoGetIntegerFromTable(struct lua_State *pState) {
     // the way it does the mode detection is entertaining
     assert(0 == getIntField(pState, "damage"));
     assert(30 == getIntField(pState, "clipSize"));
+
+    lua_pop(pState, -1);
+}
+
+
+void demoGetDoubleFromTable(struct lua_State *pState) {
+    assert(loadTable(pState, "conf = {name=\"ak47\", damage=33.3, clipSize=30}\n", "conf"));
+    assert(getDoubleField(pState, "damage") > 33.2);
+    lua_pop(pState, -1);
+}
+
+
+void demoSetNamedIntegerInTable(struct lua_State *pState) {
+    const char *sourceCode = "conf = {name=\"acr\"}";
+    assert(loadTable(pState, sourceCode, "conf"));
+    assert(!getIntField(pState, "clipSize"));
+
+    // sets a key-value pair in the table (clipSize: 23)
+    // note the order of the arguments
+
+    // lua_pushstring(pState, "clipSize");
+    // lua_pushinteger(pState, 23);
+    // lua_settable(pState, -3);  // top
+
+    // prefer new setfield() function
+    lua_pushinteger(pState, 23);
+    lua_setfield(pState, -2, "clipSize");
+    assert(23 == getIntField(pState, "clipSize"));
+
+    lua_pop(pState, -1);
 }
 
 
@@ -90,6 +131,8 @@ int main(int argc, char **argv) {
 
     demoGetStringValueFromTable(pState);
     demoGetIntegerFromTable(pState);
+    demoGetDoubleFromTable(pState);
+    demoSetNamedIntegerInTable(pState);
 
     lua_close(pState);
     return 0;
