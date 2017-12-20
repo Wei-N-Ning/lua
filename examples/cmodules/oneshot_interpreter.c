@@ -6,12 +6,28 @@
 #include <lualib.h>
 
 
-static int l_sin(struct lua_State *L) {
+double getNumberNaive(struct lua_State *L) {
     int isnum;
     double d = lua_tonumberx(L, 1, &isnum);
     if (!isnum) {
         return 0;
     }
+    return d;
+}
+
+
+// The auxiliary library helps us with this task.
+// The function luaL_checknumber checks whether a
+// given argument is a number:
+// in case of error, it throws an informative error message;
+// otherwise, it returns the number.
+double getNumber(struct lua_State *L) {
+    return luaL_checknumber(L, 1);
+}
+
+
+static int l_sin(struct lua_State *L) {
+    double d = getNumber(L);
     lua_pushnumber(L, sin(d));
     return 1;
 }
