@@ -72,3 +72,14 @@ set_target_properties(variadicfuncs
 target_link_libraries(variadicfuncs
     PUBLIC
     luaStdLib)
+
+
+add_executable(variadicfuncscxx
+    variadicfuncscxx.cpp
+    variadicfuncscxx.h)
+set_target_properties(variadicfuncscxx
+    PROPERTIES
+    CXX_STANDARD 11)
+target_link_libraries(variadicfuncscxx
+    PUBLIC
+    luaStdLib)
