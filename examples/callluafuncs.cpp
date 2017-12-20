@@ -70,6 +70,12 @@ void demoCallLuaFunction(struct lua_State *pState) {
         "   return counter * arg\n"
         "end\n"
     };
+
+    // reason for not explicitly popping the arguments and the function itself:
+    //
+    // Lua Book P242:
+    // it pushes the error message on the stack (but still pops the function and
+    // its arguments).
     assert(loadSourceCode(pState, sourceCode));
     assert(init(pState));
     assert(10 == operate(pState, 2));
