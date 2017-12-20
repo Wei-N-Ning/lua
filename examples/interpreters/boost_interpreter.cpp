@@ -60,7 +60,7 @@ static int listdir(struct lua_State *L) {
     for (int idx = 1; di != end; ++di, ++idx) {
         lua_pushinteger(L, idx);
         lua_pushstring(L, di->path().c_str());
-        lua_settable(L, -3);  // will pop the above values
+        lua_settable(L, -3);  // will pop the above key-value pair
     }
 
     return 1;

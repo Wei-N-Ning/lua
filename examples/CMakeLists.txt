@@ -1,3 +1,3 @@
 
 add_subdirectory(capi)
-add_subdirectory(cmodules)
+add_subdirectory(interpreters)
