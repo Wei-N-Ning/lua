@@ -25,7 +25,7 @@ static int getHealthPoints(struct lua_State *L) {
 static const struct luaL_Reg module[] = {
     {"getName", getName},
     {"getHealthPoints", getHealthPoints},
-    
+
     // marks the end of the array
     {NULL, NULL}
 };
