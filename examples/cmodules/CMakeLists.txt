@@ -51,3 +51,17 @@ install(TARGETS helloworld_boost
     DESTINATION
     /tmp/lua/cmodules)
 
+
+add_library(tablemanip SHARED
+    tablemanip.cpp)
+set_property(TARGET tablemanip
+    PROPERTY
+    CXX_STANDARD 11)
+target_include_directories(tablemanip
+    PUBLIC
+    ${CMAKE_SOURCE_DIR}/src/include/luaBase
+    ${CMAKE_SOURCE_DIR}/src/include/luaCore)
+install(TARGETS tablemanip
+    DESTINATION
+    /tmp/lua/cmodules)
+
