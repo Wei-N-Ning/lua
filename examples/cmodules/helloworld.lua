@@ -6,15 +6,14 @@ end
 
 local function demoAccessGlobalFunction()
     local m = require "libhelloworld_f"
-    print(m)
-    print(getLabel)
-    print(getLabel())
+    assert("hello world" == getLabel())
 end
 
 
 local function demoAccessScopedFunction()
     local m = require "libhelloworld_c"
-    print(m)
+    assert("Archvile" == m.getName())
+    assert(300 == m.getHealthPoints())
 end
 
 

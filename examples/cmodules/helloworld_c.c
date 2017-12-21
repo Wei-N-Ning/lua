@@ -4,6 +4,7 @@
 
 
 #include <lua.h>
+#include <lauxlib.h>
 
 
 static int getName(struct lua_State *L) {
@@ -12,6 +13,25 @@ static int getName(struct lua_State *L) {
 }
 
 
+static int getHealthPoints(struct lua_State *L) {
+    lua_pushinteger(L, 300);
+    return 1;
+}
+
+
+// this defines a module that encapsulates
+// the functions in its own scope
+
+static const struct luaL_Reg module[] = {
+    {"getName", getName},
+    {"getHealthPoints", getHealthPoints},
+    
+    // marks the end of the array
+    {NULL, NULL}
+};
+
+
 int luaopen_libhelloworld_c(struct lua_State *L) {
-    return 0;
+    luaL_newlib(L, module);
+    return 1;
 }

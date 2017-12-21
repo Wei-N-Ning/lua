@@ -11,9 +11,10 @@ install(TARGETS helloworld_f
 
 add_library(helloworld_c SHARED
     helloworld_c.c)
-target_link_libraries(helloworld_c
+target_include_directories(helloworld_c
     PUBLIC
-    luaBase)
+    ${CMAKE_SOURCE_DIR}/src/include/luaBase
+    ${CMAKE_SOURCE_DIR}/src/include/luaCore)
 install(TARGETS helloworld_c
     DESTINATION
     /tmp/lua/cmodules)

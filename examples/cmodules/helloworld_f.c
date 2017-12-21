@@ -14,7 +14,7 @@ static int getLabel(struct lua_State *L) {
 // this is one quick way to register a C function;
 // once the shared library is imported in Lua,
 // a global function called getLabel() will be
-// available;
+// callable from the Lua source code;
 // see helloworld.lua for Lua source code
 
 int luaopen_libhelloworld_f(struct lua_State *L) {
