@@ -79,3 +79,16 @@ install(TARGETS statemanip
     DESTINATION
     /tmp/lua/cmodules)
 
+
+add_library(customtypes SHARED
+    customtypes.cpp)
+set_property(TARGET customtypes
+    PROPERTY
+    CXX_STANDARD 11)
+target_include_directories(customtypes
+    PUBLIC
+    ${CMAKE_SOURCE_DIR}/src/include/luaBase
+    ${CMAKE_SOURCE_DIR}/src/include/luaCore)
+install(TARGETS customtypes
+    DESTINATION
+    /tmp/lua/cmodules)
