@@ -4,6 +4,7 @@
 
 #include <climits>
 
+
 extern "C" {
 #include <lua.h>
 #include <lualib.h>
@@ -28,43 +29,139 @@ extern "C" {
 
 extern "C" {
 
-
+/*
+ * Lua provides a basic type specifically for this task, called userdata.
+ * A userdata offers a raw memory area, with no predefined operations
+ * in Lua, which we can use to store anything.
+ */
 typedef struct BitArray {
     int size;
     unsigned int values[1];  // the segments (WORDs)
 } BitArray;
 
 
+using BitArrayPtr = BitArray *;
+
+namespace {
+
+/*
+ * @return number of bytes required to store the given number
+ * of Boolean values
+ */
 size_t getSize(int numBits) {
     return sizeof(BitArray) + I_WORD(numBits - 1) * sizeof(unsigned int);
 }
 
 
-static int createBoolArray(lua_State *L) {
-    int numBits{(int)luaL_checkinteger(L, 1)};
+/*
+ * Validate and retrieve the 1st and 2nd arguments that are passed to
+ * BitArray's setter getter functions, which are:
+ * - a pointer to a BitArray struct (userdata)
+ * - an index
+ *
+ * @param L: lua state
+ * @param o_pBitArray: an output parameter, to hold the pointer to the user
+ * data
+ * @param o_idx: an output parameter, to hold the value of the index, note
+ * that C array index starts from 0 hence the first bit in the BitArray is
+ * member [0] in the C array
+ */
+void retrieveArguments(lua_State *L, BitArrayPtr &o_pBitArray, int &o_idx) {
+    auto pBitArray = (BitArrayPtr) lua_touserdata(L, 1);
+    luaL_argcheck(L, pBitArray != nullptr, 1, "expect BitArray");
+    auto idx = (int) luaL_checkinteger(L, 2) - 1;
+    luaL_argcheck(L, 0 <= idx && idx < pBitArray->size, 2, "index out of range");
+    o_pBitArray = pBitArray;
+    o_idx = idx;
+}
+
+
+/*
+ * iterate over all the segments in bytes; set each byte to 0
+ */
+void resetBoolArray(BitArrayPtr pBitArray) {
+    if (pBitArray->size > 0) {
+        for (int begin = 0, end = I_WORD(pBitArray->size - 1);
+             begin <= end;
+             ++begin) {
+            pBitArray->values[begin] = 0;
+        }
+    }
+}
+
+
+int create(lua_State *L) {
+    int numBits{(int) luaL_checkinteger(L, 1)};
     luaL_argcheck(L, numBits > 1, 1, "invalid bit array size (must be greater than 1)");
     size_t numBytes = getSize(numBits);
-    auto pBitArray = (BitArray *)lua_newuserdata(L, numBytes);
+    auto pBitArray = (BitArrayPtr) lua_newuserdata(L, numBytes);
     pBitArray->size = numBits;
-    for (int idx = 0, max_ = I_WORD(numBits - 1); idx <= max_; ++idx) {
-        pBitArray->values[idx] = 0;
-    }
+    resetBoolArray(pBitArray);
     return 1;
 }
 
 
-static int set(lua_State *L) {
-    auto pBitArray = (BitArray *)lua_touserdata(L, 1);
+int size(lua_State *L) {
+    auto pBitArray = (BitArrayPtr) lua_touserdata(L, 1);
     luaL_argcheck(L, pBitArray != nullptr, 1, "expect BitArray");
-    auto idx = (int)luaL_checkinteger(L, 2) - 1;  // array index starts from 0
-    luaL_argcheck(L, 0 <= idx && idx < pBitArray->size, 2, "index out of range");
+    lua_pushinteger(L, pBitArray->size);
+    return 1;
+}
+
+
+int reset(lua_State *L) {
+    auto pBitArray = (BitArrayPtr) lua_touserdata(L, 1);
+    luaL_argcheck(L, pBitArray != nullptr, 1, "expect BitArray");
+    resetBoolArray(pBitArray);
     return 0;
 }
 
 
+int set(lua_State *L) {
+    int idx;
+    BitArrayPtr pBitArray{nullptr};
+    retrieveArguments(L, pBitArray, idx);
+
+    // any lua value that can be casted to boolean
+    luaL_checkany(L, 3);
+    if (lua_toboolean(L, 3)) {
+        //                 segment     offset(mask)
+        // e.g. 0001000
+        pBitArray->values[I_WORD(idx)] |= I_BIT(idx);
+    } else {
+        // e.g. 1110111, bitwise negate
+        pBitArray->values[I_WORD(idx)] &= ~I_BIT(idx);
+    }
+    return 0;
+}
+
+
+int get(lua_State *L) {
+    int idx;
+    BitArrayPtr pBitArray{nullptr};
+    retrieveArguments(L, pBitArray, idx);
+    // segment * offset(mask)
+    // e.g. segment: 00 00 01 00 [01 00 00 00] 00 01 00 01
+    //       offset:              01 00 00 00
+    //       result: not 0
+
+    // NOTE: do not cast the result value to C++'s bool!
+    // recall that Lua API uses integer to represent boolean type
+    // void lua_pushboolean (lua_State *L, int b)
+    auto result = pBitArray->values[I_WORD(idx)] & I_BIT(idx);
+    lua_pushboolean(L, result);
+    return 1;
+}
+
+}
+
+
 static const struct luaL_Reg module[] = {
-    {"createBoolArray", createBoolArray},
+    {"create", create},
+    {"size", size},
     {"set", set},
+    {"get", get},
+    {"reset", reset},
 
     // not providing this "poisonous bill" will cause Lua
     // interpreter to segfault
