@@ -53,6 +53,10 @@ size_t getSize(int numBits) {
 }
 
 
+#define getBitArraySafe(L) \
+    (BitArrayPtr)luaL_checkudata(L, 1, "luaExamples.BitArray")
+
+
 /*
  * Validate and retrieve the 1st and 2nd arguments that are passed to
  * BitArray's setter getter functions, which are:
@@ -67,7 +71,7 @@ size_t getSize(int numBits) {
  * member [0] in the C array
  */
 void retrieveArguments(lua_State *L, BitArrayPtr &o_pBitArray, int &o_idx) {
-    auto pBitArray = (BitArrayPtr) lua_touserdata(L, 1);
+    auto pBitArray = getBitArraySafe(L);
     luaL_argcheck(L, pBitArray != nullptr, 1, "expect BitArray");
     auto idx = (int) luaL_checkinteger(L, 2) - 1;
     luaL_argcheck(L, 0 <= idx && idx < pBitArray->size, 2, "index out of range");
@@ -90,6 +94,14 @@ void resetBoolArray(BitArrayPtr pBitArray) {
 }
 
 
+/*
+ * The usual method to distinguish one type of userdata from another is
+ * to create a unique metatable for that type.
+ * Every time we create a userdata, we mark it with the corresponding
+ * metatable; every time we get a userdata, we check whether it has the
+ * right metatable. Because Lua code cannot change the metatable of a
+ * userdata, it cannot deceive these checks.
+ */
 int create(lua_State *L) {
     int numBits{(int) luaL_checkinteger(L, 1)};
     luaL_argcheck(L, numBits > 1, 1, "invalid bit array size (must be greater than 1)");
@@ -97,12 +109,21 @@ int create(lua_State *L) {
     auto pBitArray = (BitArrayPtr) lua_newuserdata(L, numBytes);
     pBitArray->size = numBits;
     resetBoolArray(pBitArray);
+    luaL_getmetatable(L, "luaExamples.BitArray");
+
+    // state of the stack:
+    // -1 metatable
+    // -2 userdata
+
+    // pops a table from the stack and sets it as the metatable
+    // of the object at the given index
+    lua_setmetatable(L, -2);
     return 1;
 }
 
 
 int size(lua_State *L) {
-    auto pBitArray = (BitArrayPtr) lua_touserdata(L, 1);
+    auto pBitArray = getBitArraySafe(L);
     luaL_argcheck(L, pBitArray != nullptr, 1, "expect BitArray");
     lua_pushinteger(L, pBitArray->size);
     return 1;
@@ -110,7 +131,7 @@ int size(lua_State *L) {
 
 
 int reset(lua_State *L) {
-    auto pBitArray = (BitArrayPtr) lua_touserdata(L, 1);
+    auto pBitArray = getBitArraySafe(L);
     luaL_argcheck(L, pBitArray != nullptr, 1, "expect BitArray");
     resetBoolArray(pBitArray);
     return 0;
@@ -170,6 +191,7 @@ static const struct luaL_Reg module[] = {
 
 
 int luaopen_libcustomtypes(lua_State *L) {
+    luaL_newmetatable(L, "luaExamples.BitArray");
     luaL_newlib(L, module);
     return 1;
 }

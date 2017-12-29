@@ -22,7 +22,7 @@ end
 
 local function demoSetGetBoolArrayMembers()
     local m = require "libcustomtypes"
-    local ba = m.create(13)
+    local ba = m.create(6)
     local ok = false
     local err = ""
     
@@ -54,7 +54,7 @@ local function demoSetGetBoolArrayMembers()
     
     -- test the getter function, retrieving the initial state of the 
     -- bits
-    for idx = 1, 6 do
+    for idx = 1, m.size(ba) do
         assert(false == m.get(ba, idx))
     end
     
@@ -68,7 +68,7 @@ local function demoSetGetBoolArrayMembers()
     m.set(ba, 5, {1})
     m.set(ba, 6, ba)
     
-    for idx = 1, 6 do
+    for idx = 1, m.size(ba) do
         assert(true == m.get(ba, idx))
     end
 end
@@ -77,13 +77,30 @@ end
 local function demoResetBoolArray()
     local m = require "libcustomtypes"
     local ba = m.create(6)
-    for idx = 1, 6 do
+    for idx = 1, m.size(ba) do
         m.set(ba, idx, "1")
     end
     m.reset(ba)
-    for idx = 1, 6 do
+    for idx = 1, m.size(ba) do
         assert(false == m.get(ba, idx))
     end
+end
+
+
+-- to demonstrate that, when the given userdata is not a BitArray
+-- lua will throw an error
+local function demoTypeSafety()
+    local m = require "libcustomtypes"
+    local ba = m.create(6)
+    
+    -- bad argument #1 to 'size' 
+    -- (luaExamples.BitArray expected, got FILE*)
+    local ok, msg = pcall(
+        function()
+            return m.size(io.stdin)
+        end
+    )
+    assert(false == ok)
 end
 
 
@@ -93,6 +110,8 @@ local function run()
     demoBoolArrayCreation()
     demoSetGetBoolArrayMembers()
     demoResetBoolArray()
+    
+    demoTypeSafety()
 end
 
 
