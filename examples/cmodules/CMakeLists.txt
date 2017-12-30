@@ -111,3 +111,52 @@ add_test(
     COMMAND lua5.3 ${CMAKE_SOURCE_DIR}/examples/cmodules/customtypes.lua
 )
 
+
+add_library(simpleiter_c SHARED
+    simpleiter_c.c)
+target_include_directories(simpleiter_c
+    PUBLIC
+    ${CMAKE_SOURCE_DIR}/src/include/luaBase
+    ${CMAKE_SOURCE_DIR}/src/include/luaCore)
+install(TARGETS simpleiter_c
+    DESTINATION
+    /tmp/lua/cmodules)
+
+
+add_library(simpleiter_cxx SHARED
+    simpleiter_cxx.cpp)
+set_property(TARGET simpleiter_cxx
+    PROPERTY
+    CXX_STANDARD 11)
+target_include_directories(simpleiter_cxx
+    PUBLIC
+    ${CMAKE_SOURCE_DIR}/src/include/luaBase
+    ${CMAKE_SOURCE_DIR}/src/include/luaCore)
+install(TARGETS simpleiter_cxx
+    DESTINATION
+    /tmp/lua/cmodules)
+
+
+add_test(
+    NAME luaExamples::CMODULES::simpleiter
+    COMMAND lua5.3 ${CMAKE_SOURCE_DIR}/examples/cmodules/simpleiter.lua
+)
+
+
+add_library(diriter SHARED
+    diriter.cpp)
+set_property(TARGET diriter
+    PROPERTY
+    CXX_STANDARD 11)
+target_include_directories(diriter
+    PUBLIC
+    ${CMAKE_SOURCE_DIR}/src/include/luaBase
+    ${CMAKE_SOURCE_DIR}/src/include/luaCore)
+install(TARGETS diriter
+    DESTINATION
+    /tmp/lua/cmodules)
+add_test(
+    NAME luaExamples::CMODULES::diriter
+    COMMAND lua5.3 ${CMAKE_SOURCE_DIR}/examples/cmodules/diriter.lua
+)
+
