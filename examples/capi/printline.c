@@ -12,7 +12,6 @@
 // This example offers a good start to investigate how lua state works
 
 #include <stdio.h>
-#include <string.h>
 
 #include <lua.h>
 #include <lauxlib.h>

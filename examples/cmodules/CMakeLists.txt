@@ -52,6 +52,12 @@ install(TARGETS helloworld_boost
     /tmp/lua/cmodules)
 
 
+add_test(
+    NAME luaExamples::CMODULES::helloworld
+    COMMAND lua5.3 ${CMAKE_SOURCE_DIR}/examples/cmodules/helloworld.lua
+)
+
+
 add_library(tablemanip SHARED
     tablemanip.cpp)
 set_property(TARGET tablemanip
@@ -64,6 +70,10 @@ target_include_directories(tablemanip
 install(TARGETS tablemanip
     DESTINATION
     /tmp/lua/cmodules)
+add_test(
+    NAME luaExamples::CMODULES::tablemanip
+    COMMAND lua5.3 ${CMAKE_SOURCE_DIR}/examples/cmodules/tablemanip.lua
+)
 
 
 add_library(statemanip SHARED
@@ -78,6 +88,10 @@ target_include_directories(statemanip
 install(TARGETS statemanip
     DESTINATION
     /tmp/lua/cmodules)
+add_test(
+    NAME luaExamples::CMODULES::statemanip
+    COMMAND lua5.3 ${CMAKE_SOURCE_DIR}/examples/cmodules/statemanip.lua
+)
 
 
 add_library(customtypes SHARED
@@ -92,3 +106,8 @@ target_include_directories(customtypes
 install(TARGETS customtypes
     DESTINATION
     /tmp/lua/cmodules)
+add_test(
+    NAME luaExamples::CMODULES::customtypes
+    COMMAND lua5.3 ${CMAKE_SOURCE_DIR}/examples/cmodules/customtypes.lua
+)
+

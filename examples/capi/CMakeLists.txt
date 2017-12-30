@@ -9,25 +9,39 @@ add_executable(printline printline.c)
 target_link_libraries(printline
     PUBLIC
     luaStdLib)
-
+add_test(
+    NAME luaExamples::CAPI::printline
+    COMMAND printline
+)
 
 add_executable(pushvalue pushvalue.c)
 target_link_libraries(pushvalue
     PUBLIC
     luaStdLib)
-
+add_test(
+    NAME luaExamples::CAPI::pushvalue
+    COMMAND pushvalue
+)
 
 
 add_executable(stackop stackop.c)
 target_link_libraries(stackop
     PUBLIC
     luaStdLib)
+add_test(
+    NAME luaExamples::CAPI::stackop
+    COMMAND stackop
+)
 
 
 add_executable(errorhandling errorhandling.c)
 target_link_libraries(errorhandling
     PUBLIC
     luaStdLib)
+add_test(
+    NAME luaExamples::CAPI::errorhandling
+    COMMAND errorhandling
+)
 
 
 add_executable(luaconfigurator
@@ -39,6 +53,10 @@ set_target_properties(luaconfigurator
 target_link_libraries(luaconfigurator
     PUBLIC
     luaStdLib)
+add_test(
+    NAME luaExamples::CAPI::luaconfigurator
+    COMMAND luaconfigurator
+)
 
 
 add_executable(tableop
@@ -50,6 +68,10 @@ set_target_properties(tableop
 target_link_libraries(tableop
     PUBLIC
     luaStdLib)
+add_test(
+    NAME luaExamples::CAPI::tableop
+    COMMAND tableop
+)
 
 
 add_executable(callluafuncs
@@ -61,6 +83,10 @@ set_target_properties(callluafuncs
 target_link_libraries(callluafuncs
     PUBLIC
     luaStdLib)
+add_test(
+    NAME luaExamples::CAPI::callluafuncs
+    COMMAND callluafuncs
+)
 
 
 add_executable(variadicfuncs
@@ -72,6 +98,10 @@ set_target_properties(variadicfuncs
 target_link_libraries(variadicfuncs
     PUBLIC
     luaStdLib)
+add_test(
+    NAME luaExamples::CAPI::variadicfuncs
+    COMMAND variadicfuncs
+)
 
 
 add_executable(variadicfuncscxx
@@ -83,3 +113,7 @@ set_target_properties(variadicfuncscxx
 target_link_libraries(variadicfuncscxx
     PUBLIC
     luaStdLib)
+add_test(
+    NAME luaExamples::CAPI::variadicfuncscxx
+    COMMAND variadicfuncscxx
+)
