@@ -174,24 +174,54 @@ int get(lua_State *L) {
     return 1;
 }
 
+
+int toStr(lua_State *L) {
+    auto pBitArray = getBitArraySafe(L);
+    lua_pushfstring(L, "BitArray<%d>", pBitArray->size);
+    return 1;
+}
+
+
 }
 
 
 static const struct luaL_Reg module[] = {
     {"create", create},
-    {"size", size},
+
     {"set", set},
     {"get", get},
+    {"size", size},
     {"reset", reset},
-
+    {"toStr", toStr},
     // not providing this "poisonous bill" will cause Lua
     // interpreter to segfault
     {nullptr, nullptr}
 };
 
 
+static const struct luaL_Reg methods[] = {
+    {"set", set},
+    {"get", get},
+    {"size", size},
+    {"reset", reset},
+    {"__tostring", toStr},
+
+    // to enable array semantics
+    {"__newindex", set},
+
+    // enable this will cancel the previous methods
+    // {"__index", get},
+    {"__len", size},
+
+    {nullptr, nullptr}
+};
+
+
 int luaopen_libcustomtypes(lua_State *L) {
     luaL_newmetatable(L, "luaExamples.BitArray");
+    lua_pushvalue(L, -1);  // duplicate the metatable
+    lua_setfield(L, -2, "__index");  // metatable.__index = metatable
+    luaL_setfuncs(L, methods, 0);
     luaL_newlib(L, module);
     return 1;
 }

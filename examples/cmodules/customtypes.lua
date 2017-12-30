@@ -87,8 +87,7 @@ local function demoResetBoolArray()
 end
 
 
--- to demonstrate that, when the given userdata is not a BitArray
--- lua will throw an error
+-- when the given userdata is not a BitArray lua will throw an error
 local function demoTypeSafety()
     local m = require "libcustomtypes"
     local ba = m.create(6)
@@ -104,6 +103,82 @@ local function demoTypeSafety()
 end
 
 
+-- DO NOT RUN THIS FUNCTION!
+-- to create the OO interface in Lua code by exploiting the __index 
+-- meta field;
+-- We cannot set the metatable of a userdata from Lua but we can 
+-- get it;
+-- Using C/C++ to design and expose the OO interface can enforce 
+-- better encapsulation;
+local function demoDesignOOInterfaceInLua()
+    local m = require "libcustomtypes"
+    local ba = m.create(6)
+    do -- add method look up table
+        local baMetatable = getmetatable(ba)
+        local methodTable = {}
+        baMetatable.__index = methodTable
+        methodTable.set = m.set
+        methodTable.get = m.get
+    end
+    assert(false == ba:get(1))
+    ba:set(1, 1)
+    assert(true == ba:get(1))
+end
+
+
+local function demoDesignOOInterfaceInCXX()
+    local m = require "libcustomtypes"
+    local ba = m.create(6)
+    
+    -- Lua Book P284, Remember that a:size() is equivalent to a.size(a)
+    assert(6 == ba:size())
+    assert(6 == ba.size(ba))
+    
+    assert(false == ba:get(1))
+    ba:set(1, 1)
+    assert(true == ba:get(1))
+end
+
+
+local function demoMagicMethodToStringInCXX()
+    local m = require "libcustomtypes"
+    local ba = m.create(13)
+    
+    assert("BitArray<13>" == string.format("%s", ba))
+    assert("BitArray<13>" == m.toStr(ba))
+end
+
+-- DO NOT RUN THIS FUNCTION!
+-- create metafields so that BitArray acts like normal Array;
+-- one can use the Array semantics, a[n] on BitArray;
+local function demoArraySemanticsInLua()
+    local m = require "libcustomtypes"
+    local ba = m.create(13)
+    do
+        local metatable = getmetatable(ba)
+        metatable.__index = m.get
+        metatable.__newindex = m.set
+        metatable.__len = m.size
+    end
+    assert(13 == #ba)
+    assert(false == ba[1])
+    ba[1] = "1"
+    assert(true == ba[1])
+end
+
+
+local function demoArraySemanticsInCXX()
+    local m = require "libcustomtypes"
+    local ba = m.create(13)
+    assert(13 == #ba)
+    
+    -- array indexing is not enabled in this build
+    assert(false == ba:get(13))
+    ba[13] = "1"
+    assert(true == ba:get(13))
+end
+
+
 local function run()
     initialize()
    
@@ -112,6 +187,11 @@ local function run()
     demoResetBoolArray()
     
     demoTypeSafety()
+    
+    demoDesignOOInterfaceInCXX()
+    demoMagicMethodToStringInCXX()
+    
+    demoArraySemanticsInCXX()
 end
 
 
