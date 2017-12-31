@@ -173,3 +173,17 @@ add_test(
     COMMAND lua5.3 ${CMAKE_SOURCE_DIR}/examples/cmodules/diriter.lua
 )
 
+
+add_library(tasks SHARED
+    tasks.cpp)
+set_property(TARGET tasks
+    PROPERTY
+    CXX_STANDARD 11)
+target_include_directories(tasks
+    PUBLIC
+    ${CMAKE_SOURCE_DIR}/src/include/luaBase
+    ${CMAKE_SOURCE_DIR}/src/include/luaCore)
+install(TARGETS tasks
+    DESTINATION
+    /tmp/lua/cmodules)
+
