@@ -143,18 +143,31 @@ add_test(
 )
 
 
-add_library(diriter SHARED
-    diriter.cpp)
-set_property(TARGET diriter
-    PROPERTY
-    CXX_STANDARD 11)
-target_include_directories(diriter
+add_library(diriter_c SHARED
+    diriter_c.c)
+target_include_directories(diriter_c
     PUBLIC
     ${CMAKE_SOURCE_DIR}/src/include/luaBase
     ${CMAKE_SOURCE_DIR}/src/include/luaCore)
-install(TARGETS diriter
+install(TARGETS diriter_c
     DESTINATION
     /tmp/lua/cmodules)
+
+
+add_library(diriter_cxx SHARED
+    diriter_cxx.cpp)
+set_property(TARGET diriter_cxx
+    PROPERTY
+    CXX_STANDARD 11)
+target_include_directories(diriter_cxx
+    PUBLIC
+    ${CMAKE_SOURCE_DIR}/src/include/luaBase
+    ${CMAKE_SOURCE_DIR}/src/include/luaCore)
+install(TARGETS diriter_cxx
+    DESTINATION
+    /tmp/lua/cmodules)
+
+
 add_test(
     NAME luaExamples::CMODULES::diriter
     COMMAND lua5.3 ${CMAKE_SOURCE_DIR}/examples/cmodules/diriter.lua
