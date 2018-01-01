@@ -187,3 +187,27 @@ install(TARGETS tasks
     DESTINATION
     /tmp/lua/cmodules)
 
+
+add_test(
+    NAME luaExamples::CMODULES::tasks
+    COMMAND lua5.3 ${CMAKE_SOURCE_DIR}/examples/cmodules/tasks.lua
+)
+
+
+add_library(lproc SHARED
+    lproc.cpp)
+set_target_properties(lproc
+    PROPERTIES
+    CXX_STANDARD 11
+    POSITION_INDEPENDENT_CODE ON)
+target_include_directories(lproc
+    PUBLIC
+    ${CMAKE_SOURCE_DIR}/src/include/luaBase
+    ${CMAKE_SOURCE_DIR}/src/include/luaCore)
+target_link_libraries(lproc
+    PUBLIC
+    pthread)
+install(TARGETS lproc
+    DESTINATION
+    /tmp/lua/cmodules)
+

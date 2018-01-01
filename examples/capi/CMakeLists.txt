@@ -117,3 +117,18 @@ add_test(
     NAME luaExamples::CAPI::variadicfuncscxx
     COMMAND variadicfuncscxx
 )
+
+
+add_executable(concurrency
+    concurrency.cpp)
+set_target_properties(concurrency
+    PROPERTIES
+    CXX_STANDARD 11)
+target_link_libraries(concurrency
+    PUBLIC
+    luaStdLib)
+add_test(
+    NAME luaExamples::CAPI::concurrency
+    COMMAND concurrency
+)
+

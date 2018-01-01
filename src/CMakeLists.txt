@@ -19,6 +19,9 @@ file(GLOB __LUACORE_SOURCE_FILES sources/luaCore/*.c)
 add_library(luaCore STATIC
     ${__LUACORE_HEADER_FILES}
     ${__LUACORE_SOURCE_FILES})
+set_target_properties(luaCore
+    PROPERTIES
+    POSITION_INDEPENDENT_CODE ON)
 target_include_directories(luaCore
     PUBLIC
     include/luaCore)
@@ -41,6 +44,9 @@ add_library(luaStdLib STATIC
     sources/luaStdLib/loslib.c
     sources/luaStdLib/linit.c
     )
+set_target_properties(luaStdLib
+    PROPERTIES
+    POSITION_INDEPENDENT_CODE ON)
 target_link_libraries(luaStdLib
     PUBLIC
     luaCore)
