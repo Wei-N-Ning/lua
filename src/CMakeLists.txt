@@ -28,7 +28,11 @@ target_include_directories(luaCore
 target_link_libraries(luaCore
     PUBLIC
     m
-    luaBase)
+    luaBase
+    ${CMAKE_DL_LIBS})
+target_compile_definitions(luaCore PUBLIC
+    -DLUA_USE_POSIX -DLUA_USE_DLOPEN
+    )
 
 add_library(luaStdLib STATIC
     sources/luaStdLib/lbaselib.c
@@ -49,11 +53,19 @@ set_target_properties(luaStdLib
     POSITION_INDEPENDENT_CODE ON)
 target_link_libraries(luaStdLib
     PUBLIC
-    luaCore)
+    luaCore
+    ${CMAKE_DL_LIBS})
+target_compile_definitions(luaStdLib PUBLIC
+    -DLUA_USE_POSIX -DLUA_USE_DLOPEN
+    )
 
-add_executable(lua
+add_executable(luawein
     sources/apps/lua.c)
-target_link_libraries(lua
+target_link_libraries(luawein
     PUBLIC
     luaCore
-    luaStdLib)
+    luaStdLib
+    ${CMAKE_DL_LIBS})
+target_compile_definitions(luawein PUBLIC
+    -DLUA_USE_POSIX -DLUA_USE_DLOPEN
+    )

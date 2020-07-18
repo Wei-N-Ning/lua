@@ -3,11 +3,12 @@ add_library(helloworld_f SHARED
     helloworld_f.c)
 target_link_libraries(helloworld_f
     PUBLIC
-    luaBase)
+    luaBase
+    ${CMAKE_DL_LIBRARIES}
+    )
 install(TARGETS helloworld_f
     DESTINATION
     /tmp/lua/cmodules)
-
 
 add_library(helloworld_c SHARED
     helloworld_c.c)
@@ -40,13 +41,13 @@ set_property(TARGET helloworld_boost
     PROPERTY
     CXX_STANDARD 11)
 target_include_directories(helloworld_boost
-    PUBLIC
+    PRIVATE
+    ${Boost_INCLUDE_DIRS}
     ${CMAKE_SOURCE_DIR}/src/include/luaBase
     ${CMAKE_SOURCE_DIR}/src/include/luaCore)
 target_link_libraries(helloworld_boost
-    PUBLIC
-    boost_filesystem
-    boost_system)
+    PRIVATE
+    ${Boost_LIBARIES})
 install(TARGETS helloworld_boost
     DESTINATION
     /tmp/lua/cmodules)
@@ -54,7 +55,7 @@ install(TARGETS helloworld_boost
 
 add_test(
     NAME luaExamples::CMODULES::helloworld
-    COMMAND lua5.3 ${CMAKE_SOURCE_DIR}/examples/cmodules/helloworld.lua
+    COMMAND $<TARGET_FILE:luawein> ${CMAKE_SOURCE_DIR}/examples/cmodules/helloworld.lua
 )
 
 
@@ -72,7 +73,7 @@ install(TARGETS tablemanip
     /tmp/lua/cmodules)
 add_test(
     NAME luaExamples::CMODULES::tablemanip
-    COMMAND lua5.3 ${CMAKE_SOURCE_DIR}/examples/cmodules/tablemanip.lua
+    COMMAND $<TARGET_FILE:luawein> ${CMAKE_SOURCE_DIR}/examples/cmodules/tablemanip.lua
 )
 
 
@@ -90,7 +91,7 @@ install(TARGETS statemanip
     /tmp/lua/cmodules)
 add_test(
     NAME luaExamples::CMODULES::statemanip
-    COMMAND lua5.3 ${CMAKE_SOURCE_DIR}/examples/cmodules/statemanip.lua
+    COMMAND $<TARGET_FILE:luawein> ${CMAKE_SOURCE_DIR}/examples/cmodules/statemanip.lua
 )
 
 
@@ -108,7 +109,7 @@ install(TARGETS customtypes
     /tmp/lua/cmodules)
 add_test(
     NAME luaExamples::CMODULES::customtypes
-    COMMAND lua5.3 ${CMAKE_SOURCE_DIR}/examples/cmodules/customtypes.lua
+    COMMAND $<TARGET_FILE:luawein> ${CMAKE_SOURCE_DIR}/examples/cmodules/customtypes.lua
 )
 
 
@@ -139,7 +140,7 @@ install(TARGETS simpleiter_cxx
 
 add_test(
     NAME luaExamples::CMODULES::simpleiter
-    COMMAND lua5.3 ${CMAKE_SOURCE_DIR}/examples/cmodules/simpleiter.lua
+    COMMAND $<TARGET_FILE:luawein> ${CMAKE_SOURCE_DIR}/examples/cmodules/simpleiter.lua
 )
 
 
@@ -170,7 +171,7 @@ install(TARGETS diriter_cxx
 
 add_test(
     NAME luaExamples::CMODULES::diriter
-    COMMAND lua5.3 ${CMAKE_SOURCE_DIR}/examples/cmodules/diriter.lua
+    COMMAND $<TARGET_FILE:luawein> ${CMAKE_SOURCE_DIR}/examples/cmodules/diriter.lua
 )
 
 
@@ -190,7 +191,7 @@ install(TARGETS tasks
 
 add_test(
     NAME luaExamples::CMODULES::tasks
-    COMMAND lua5.3 ${CMAKE_SOURCE_DIR}/examples/cmodules/tasks.lua
+    COMMAND $<TARGET_FILE:luawein> ${CMAKE_SOURCE_DIR}/examples/cmodules/tasks.lua
 )
 
 
@@ -206,6 +207,8 @@ target_include_directories(lproc
     ${CMAKE_SOURCE_DIR}/src/include/luaCore)
 target_link_libraries(lproc
     PUBLIC
+    luaBase
+    luaCore
     pthread)
 install(TARGETS lproc
     DESTINATION

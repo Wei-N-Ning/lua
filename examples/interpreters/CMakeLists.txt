@@ -5,16 +5,14 @@ target_link_libraries(oneshot_i
     PUBLIC
     luaStdLib)
 
-include(boost.cmake)
-
 add_executable(boost_i
     boost_interpreter.cpp
     boost_interpreter.h)
+target_include_directories(boost_i PRIVATE ${Boost_INCLUDE_DIRS})
 target_link_libraries(boost_i
-    PUBLIC
+    PRIVATE
     luaStdLib
-    boost_filesystem
-    boost_system
+    ${Boost_LIBRARIES}
     )
 set_property(TARGET boost_i
     PROPERTY CXX_STANDARD 11)
